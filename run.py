@@ -3,10 +3,10 @@ from discord.ext import commands
 from config import TOKEN, COLOR
 from utils.general import GenerelUtils
 
-class LeeHi(commands.Bot):
+class Dukzl(commands.Bot):
     def __init__(self):
         super().__init__(
-            command_prefix=["하이야 "],
+            command_prefix=["$"],
             help_command=None,
             activity = discord.Game("하이야 도움 | 왔다네 왔다네 하이가 왔다네~"),
             intents=discord.Intents.all()
@@ -35,5 +35,5 @@ class LeeHi(commands.Bot):
 
 
 
-bot = LeeHi()
+bot = Dukzl()
 bot.run (TOKEN, bot=True)
