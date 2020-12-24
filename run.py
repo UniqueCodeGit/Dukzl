@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from config import TOKEN, COLOR
+from utils.general import GenerelUtils
 
 class LeeHi(commands.Bot):
     def __init__(self):
@@ -10,10 +11,11 @@ class LeeHi(commands.Bot):
             activity = discord.Game("하이야 도움 | 왔다네 왔다네 하이가 왔다네~"),
             intents=discord.Intents.all()
         )
+        GenerelUtils.AutoCommands(self)
 
     async def on_message(self, message):
         if not message.author.bot:
-            return self.process_commands(message)
+            return await self.process_commands(message)
 
     async def on_ready(self):
         print (f"{self.user.name}")
