@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from wrapper.instagram import Instagram
 from config import COLOR
 
 class Chatting(commands.Cog):
@@ -17,14 +16,6 @@ class Chatting(commands.Cog):
         embed.set_thumbnail(url="https://media.discordapp.net/attachments/785166283209048096/791688756792655872/hello.png")
         await ctx.send (embed=embed)
 
-    @commands.command(name = "테스트")
-    async def test (self, ctx, code):
-        embed = discord.Embed (
-            title = "인스타그램 테스트"
-        )
-        url = await Instagram.DownloadOneImage(code)
-        embed.set_image(url = url)
-        await ctx.send(embed=embed)
         
 
 def setup (bot):

@@ -8,7 +8,7 @@ class Dukzl(commands.Bot):
         super().__init__(
             command_prefix=["$"],
             help_command=None,
-            activity = discord.Game("하이야 도움 | 왔다네 왔다네 하이가 왔다네~"),
+            activity = discord.Game("$도움 | 덕질의 세계는 신기해요.."),
             intents=discord.Intents.all()
         )
         GenerelUtils.AutoCommands(self)
@@ -29,7 +29,7 @@ class Dukzl(commands.Bot):
             )
             embed.add_field (
                 name = "에러 내용",
-                value = f"{exception}"
+                value = f"```{exception}```"
             )
             await context.send (embed=embed)
 
