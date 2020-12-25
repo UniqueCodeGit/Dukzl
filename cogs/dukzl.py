@@ -96,18 +96,19 @@ class DukzlCog(commands.Cog):
     async def addpl (self, ctx, artist, *, url):
         if not self.Users.CheckRegistered(ctx.author):
             return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
-        self.Users.AddPlaylist(ctx.author, artist, url)
-        await ctx.send ("성공적으로 플레이리스트에 해당 노래를 넣었습니다.")
-        #try:
-            
-        #except KeyError:
-        #    await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요.")
+        try:
+            self.Users.LevelUp(ctx.author,2.3,artist)
+            self.Users.AddPlaylist(ctx.author, artist, url)
+            await ctx.send ("성공적으로 플레이리스트에 해당 노래를 넣었습니다.")
+        except KeyError:
+            await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요.")
 
     @commands.command(name = "플레이리스트삭제", aliases=["플리삭제"])
     async def poppl (self, ctx, artist, *, url):
         if not self.Users.CheckRegistered(ctx.author):
             return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
         try:
+            self.Users.LevelUp(ctx.author,1.2,artist)
             self.Users.RemovePlaylist(ctx.author, artist, url)
             await ctx.send ("성공적으로 플레이리스트에 해당 노래를 삭제했습니다.")
         except KeyError:
@@ -125,6 +126,7 @@ class DukzlCog(commands.Cog):
                 timeout = 60
             )
             if response.content == "리셋":
+                self.Users.LevelUp(ctx.author,0.4,artist)
                 self.Users.ResetPlaylist(ctx.author, artist)
                 await ctx.send ("성공적으로 플레이리스트를 리셋하였습니다.")
             else: await ctx.send ("리셋을 취소하였습니다.")
@@ -145,6 +147,41 @@ class DukzlCog(commands.Cog):
             await ctx.send(embed=embed)
         except KeyError:
             await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요.")
+
+    @commands.command(name = "가수정보")
+    async def artistinfo (self, ctx, artist):
+        if not self.Users.CheckRegistered(ctx.author):
+            return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
+        data = self.Artists.ReturnJson(artist)
+        self.Users.LevelUp(ctx.author,0.7,artist)
+        embed = discord.Embed(
+            title = f"{artist}의 정보입니다.", color = COLOR
+        )
+        embed.add_field(
+            name = "예명",
+            value = f"{data['name']}"
+        )
+        embed.add_field(
+            name = "본명",
+            value = f"{data['real_name']}"
+        )
+        embed.add_field(
+            name = "인스타그램",
+            value = f"{data['instagram']}"
+        )
+        embed.add_field(
+            name = "멜론",
+            value = f"{data['melon']}"
+        )
+        embed.add_field(
+            name = "유튜브",
+            value = f"{data['youtube']}"
+        )
+        embed.add_field(
+            name = "생일",
+            value = f"{data['birthday']}"
+        )
+        embed.set_thumbnail(url=data['profilepic'])
 
     @commands.command(name = "레벨테스트")
     @commands.is_owner()
