@@ -82,7 +82,7 @@ class DukzlCog(commands.Cog):
             )
             embed.add_field (
                 name = "덕질 레벨",
-                value = f"{artistData['level']} 레벨", inline=False
+                value = f"{artistData['level']}exp - {round(float(artistData['level'])/5, 1)} 레벨", inline=False
             )
             embed.add_field (
                 name = "플레이리스트",
@@ -90,9 +90,66 @@ class DukzlCog(commands.Cog):
             )
             await ctx.send (embed=embed)
         except KeyError:
-            await ctx.send ("해당 가수는 덕질하지 않습니다.")
+            await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요.")
 
-        
+    @commands.command(name = "플레이리스트추가", aliases=["플리추가"])
+    async def addpl (self, ctx, artist, *, url):
+        if not self.Users.CheckRegistered(ctx.author):
+            return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
+        self.Users.AddPlaylist(ctx.author, artist, url)
+        await ctx.send ("성공적으로 플레이리스트에 해당 노래를 넣었습니다.")
+        #try:
+            
+        #except KeyError:
+        #    await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요.")
+
+    @commands.command(name = "플레이리스트삭제", aliases=["플리삭제"])
+    async def poppl (self, ctx, artist, *, url):
+        if not self.Users.CheckRegistered(ctx.author):
+            return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
+        try:
+            self.Users.RemovePlaylist(ctx.author, artist, url)
+            await ctx.send ("성공적으로 플레이리스트에 해당 노래를 삭제했습니다.")
+        except KeyError:
+            await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지, URL이 올바른지 확인해주세요.")
+
+    @commands.command(name = "플레이리스트리샛", aliases=["플리리셋"])
+    async def resetpl (self, ctx, artist):
+        if not self.Users.CheckRegistered(ctx.author):
+            return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
+        try:
+            await ctx.send ("정말로 리셋하시겠습니까? 리셋하시려면 `리셋` 을 입력하주세요.")
+            response = await self.bot.wait_for (
+                "message", 
+                check=lambda message: message.author == ctx.author,
+                timeout = 60
+            )
+            if response.content == "리셋":
+                self.Users.ResetPlaylist(ctx.author, artist)
+                await ctx.send ("성공적으로 플레이리스트를 리셋하였습니다.")
+            else: await ctx.send ("리셋을 취소하였습니다.")
+        except KeyError:
+            await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요.")
+
+    @commands.command(name = "플레이리스트보기", aliases=["플리보기"])
+    async def viewpl (self, ctx, artist):
+        if not self.Users.CheckRegistered(ctx.author):
+            return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
+        try:
+            data = self.Users.ReturnPlaylist(ctx.author, artist)
+            embed = discord.Embed (
+                title = f"**{artist}** - 나의 플레이리스트입니다.",
+                description = "\n".join(data[:]),
+                color = COLOR
+            )
+            await ctx.send(embed=embed)
+        except KeyError:
+            await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요.")
+
+    @commands.command(name = "레벨테스트")
+    @commands.is_owner()
+    async def leveltest(self, ctx, amount, *, artist):
+        self.Users.LevelUp(ctx.author,amount,artist)
 
 
 

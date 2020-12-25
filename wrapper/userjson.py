@@ -40,8 +40,9 @@ class DukzlUsers:
     def CheckArtistExists(user, artist):
         with open(f"users/{user.id}.json", "r") as f:
             UserData = json.load(f)
+        converted = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["name"] == artist: return True
+            if artists["identifier"] == converted: return True
         return False
 
     @staticmethod
@@ -72,16 +73,52 @@ class DukzlUsers:
     def AddPlaylist(user, artist, url):
         with open(f"users/{user.id}.json", "r") as f:
             UserData = json.load(f)
-        artistData = {}
+        artist = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["name"] == artist:
-                artistData = artists
-                break
-        artistData["playlist"].append(url)
+            if artists["identifier"] == artist:   
+                artists["playlist"].append(url)
         with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
             json.dump(UserData, f)
+
+    @staticmethod
+    def RemovePlaylist(user, artist, url):
+        with open(f"users/{user.id}.json", "r") as f:
+            UserData = json.load(f)
+        artist = ConvertName(artist)
+        for artists in UserData["artists"]:
+            if artists["identifier"] == artist:   
+                artists["playlist"].remove(url)
+        with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
+            json.dump(UserData, f)
+
+    @staticmethod
+    def ResetPlaylist(user, artist):
+        with open(f"users/{user.id}.json", "r") as f:
+            UserData = json.load(f)
+        artist = ConvertName(artist)
+        for artists in UserData["artists"]:
+            if artists["identifier"] == artist:   
+                artists["playlist"] = []
+        with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
+            json.dump(UserData, f)
+
+    @staticmethod
+    def ReturnPlaylist(user, artist):
+        with open(f"users/{user.id}.json", "r") as f:
+            UserData = json.load(f)
+        artist = ConvertName(artist)
+        for artists in UserData["artists"]:
+            if artists["identifier"] == artist:   
+                return artists["playlist"]
 
     @staticmethod
     def LevelUp(user, amount, artist):
         with open(f"users/{user.id}.json", "r") as f:
             UserData = json.load(f)
+        amount = float(amount)
+        artist = ConvertName(artist)
+        for artists in UserData["artists"]:
+            if artists["identifier"] == artist:
+                artists["level"] += amount
+        with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
+            json.dump(UserData, f)
