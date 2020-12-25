@@ -1,15 +1,14 @@
-from inspect import ismemberdescriptor
 import discord
-import asyncio
 from discord.ext import commands
-from discord.ext.commands.core import command
 from wrapper.userjson import DukzlUsers
+from wrapper.artistjson import DukzlArtist
 from config import COLOR
 
-class Users(commands.Cog):
+class DukzlCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.Users = DukzlUsers()
+        self.Artists = DukzlArtist()
 
     @commands.command(name = "가입")
     async def register (self, ctx):
@@ -30,7 +29,11 @@ class Users(commands.Cog):
         if self.Users.CheckArtistExists(ctx.author, artist):
             return await ctx.send ("해당 가수는 이미 덕질중 입니다.")
         self.Users.AddArtist(ctx.author, artist)
-        await ctx.send (f"성공적으로 {artist}를 덕질 목록에 추가했습니다!")
+        await ctx.send (f"성공적으로 `{artist}`를 덕질 목록에 추가했습니다!")
+        if not self.Users.CheckArtistJson(artist):
+            await ctx.send (f"해당 아티스트는 덕질봇 데이터베이스에 존재하지 않습니다. 직접 정보를 추가해보세요!")
+            self.Artists.MakeArtistJson(artist)
+        
 
     @commands.command(name = "내정보")
     async def myinfo (self, ctx):
@@ -50,10 +53,16 @@ class Users(commands.Cog):
             name = "덕질하는 가수 수",
             value = f"{len(data['artists'])}명", inline=False
         )
+        if len(data['artists']) != 0:
+            art = ", ".join(data['artistlist'][:])
+            embed.add_field (
+                name = "덕질하는 가수",
+                value = f"{art}", inline=False
+            )
         embed.set_thumbnail(url=ctx.author.avatar_url)
         await ctx.send (embed=embed)
 
-    @commands.command(name = "덕질가수정보")
+    @commands.command(name = "덕질가수정보", aliases=['덕질정보'])
     async def artistdukzl (self, ctx, artist):
         if not self.Users.CheckRegistered(ctx.author):
             return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
@@ -83,7 +92,9 @@ class Users(commands.Cog):
         except KeyError:
             await ctx.send ("해당 가수는 덕질하지 않습니다.")
 
+        
+
 
 
 def setup (bot):
-    bot.add_cog(Users(bot))
+    bot.add_cog(DukzlCog(bot))
