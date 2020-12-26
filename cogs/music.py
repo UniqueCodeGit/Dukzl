@@ -3,13 +3,12 @@ import re
 import discord
 import lavalink
 from discord.ext import commands
-from config import botID
 
 url_rx = re.compile('https?:\\/\\/(?:www\\.)?.+')  # noqa: W605
 class Music(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self._ = botID
+        self._ = 791673162046767124
         self.normal_color = 0x00fa6c
         self.error_color = 0xff4a4a
         self.warn_color = 0xf7f253

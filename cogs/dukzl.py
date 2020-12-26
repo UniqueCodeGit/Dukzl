@@ -1,4 +1,6 @@
 import discord
+import random
+import datetime
 from discord.ext import commands
 from wrapper.userjson import DukzlUsers
 from wrapper.artistjson import DukzlArtist
@@ -9,6 +11,7 @@ class DukzlCog(commands.Cog):
         self.bot = bot
         self.Users = DukzlUsers()
         self.Artists = DukzlArtist()
+        self.ElementList = ['생일', '인스타그램', '멜론', '유튜브', '본명', '프로필사진', '프사']
 
     @commands.command(name = "가입")
     async def register (self, ctx):
@@ -66,6 +69,8 @@ class DukzlCog(commands.Cog):
     async def artistdukzl (self, ctx, artist):
         if not self.Users.CheckRegistered(ctx.author):
             return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
+        if not self.Users.CheckArtistExists(ctx.author, artist):
+            return await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요.")
         try:
             data = self.Users.ReturnJson(ctx.author)
             artistData = {}
@@ -96,6 +101,8 @@ class DukzlCog(commands.Cog):
     async def addpl (self, ctx, artist, *, url):
         if not self.Users.CheckRegistered(ctx.author):
             return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
+        if not self.Users.CheckArtistExists(ctx.author, artist):
+            return await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요.")
         try:
             self.Users.LevelUp(ctx.author,round(random.uniform(2,4),1),artist)
             self.Users.AddPlaylist(ctx.author, artist, url)
@@ -107,6 +114,8 @@ class DukzlCog(commands.Cog):
     async def poppl (self, ctx, artist, *, url):
         if not self.Users.CheckRegistered(ctx.author):
             return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
+        if not self.Users.CheckArtistExists(ctx.author, artist):
+            return await ctx.send ("해당 가수는 덕질하지 않습니다.  가수를 올바르게 입력했는지, URL이 올바른지 확인해주세요.")
         try:
             self.Users.LevelUp(ctx.author,round(random.uniform(1,2),1),artist)
             self.Users.RemovePlaylist(ctx.author, artist, url)
@@ -118,6 +127,8 @@ class DukzlCog(commands.Cog):
     async def resetpl (self, ctx, artist):
         if not self.Users.CheckRegistered(ctx.author):
             return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
+        if not self.Users.CheckArtistExists(ctx.author, artist):
+            return await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요.")
         try:
             await ctx.send ("정말로 리셋하시겠습니까? 리셋하시려면 `리셋` 을 입력하주세요.")
             response = await self.bot.wait_for (
@@ -137,6 +148,8 @@ class DukzlCog(commands.Cog):
     async def viewpl (self, ctx, artist):
         if not self.Users.CheckRegistered(ctx.author):
             return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
+        if not self.Users.CheckArtistExists(ctx.author, artist):
+            return await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요.")
         try:
             data = self.Users.ReturnPlaylist(ctx.author, artist)
             embed = discord.Embed (
@@ -159,39 +172,78 @@ class DukzlCog(commands.Cog):
             embed = discord.Embed(
                 title = f"{artist}의 정보입니다.", color = COLOR
             )
+            d = (lambda x: "(없음)" if x == "" else x)(data['name'])
             embed.add_field(
                 name = "예명",
-                value = f"{data['name']}"
+                value = f"{d}"
             )
+            d = (lambda x: "(없음)" if x == "" else x)(data['real_name'])
             embed.add_field(
                 name = "본명",
-                value = f"{data['real_name']}"
+                value = f"{d}"
             )
-            embed.add_field(
-                name = "인스타그램",
-                value = f"{data['instagram']}"
-            )
-            embed.add_field(
-                name = "멜론",
-                value = f"{data['melon']}"
-            )
-            embed.add_field(
-                name = "유튜브",
-                value = f"{data['youtube']}"
-            )
+            d = (lambda x: "(없음)" if x == "" else x)(data['birthday'])
             embed.add_field(
                 name = "생일",
-                value = f"{data['birthday']}"
+                value = f"{d}"
             )
-            embed.set_thumbnail(url=data['profilepic'])
+            d = (lambda x: "(없음)" if x == "" else x)(f"[클릭]({data['instagram']})")
+            embed.add_field(
+                name = "인스타그램",
+                value = f"{d}"
+            )
+            d = (lambda x: "(없음)" if x == "" else x)(f"[클릭]({data['melon']})")
+            embed.add_field(
+                name = "멜론",
+                value = f"{d}"
+            )
+            d = (lambda x: "(없음)" if x == "" else x)(f"[클릭]({data['youtube']})")
+            embed.add_field(
+                name = "유튜브",
+                value = f"{d}"
+            )
+            embed.set_image(url=data['profilepic'])
             await ctx.send(embed=embed)
-        except KeyError: await ctx.send("해당 가수가 덕질봇 데이터베이스에 없습니다.")
+        except FileNotFoundError: await ctx.send("해당 가수가 덕질봇 데이터베이스에 없습니다.")
 
     @commands.command(name="정보추가")
     async def addinfo (self, ctx, *args):
-        artist = args[0]
-        element = args[1]
-        obj = args[3]
+        if not self.Users.CheckRegistered(ctx.author):
+            return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
+        try:
+            artist = args[0]
+            element = args[1]
+            obj = args[2]
+            if not self.Users.CheckArtistExists(ctx.author, artist):
+                return await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요. (띄어쓰기가 없어야 합니다.)")
+            self.Users.LevelUp(ctx.author,round(random.uniform(3,5),1),artist)
+            if not element in self.ElementList:
+                embed = discord.Embed (
+                    title = "앗!",
+                    description = "정보는 `생일`, `본명`, `인스타그램`, `유튜브`, `멜론`, `프사(프로필사진)` 중 하나여야 합니다.",
+                    color = COLOR
+                )
+                return await ctx.send(embed=embed)
+            if element == "생일":
+                try:
+                    obj = datetime.datetime.strptime(obj, "%Y%m%d")
+                    obj = obj.strftime("%Y년 %m월 %d일")
+                    self.Artists.EditElement(artist, "birthday", obj)
+                except ValueError:
+                    return await ctx.send ("생일은 YYYYMMDD (예시 : 20200101) 형식으로 입력해주세요.")
+            if element == "본명":
+                self.Artists.EditElement(artist, "real_name", obj)
+            elif element == "인스타그램":
+                self.Artists.EditElement(artist, "instagram", obj)
+            elif element == "유튜브":
+                self.Artists.EditElement(artist, "youtube", obj)
+            elif element == "멜론":
+                self.Artists.EditElement(artist, "melon", obj)
+            elif element == "프사" or element == "프로필사진":
+                self.Artists.EditElement(artist, "profilepic", obj)
+            await ctx.send ("성공적으로 가수 정보를 수정하였습니다.")
+        except FileNotFoundError: await ctx.send("해당 가수가 덕질봇 데이터베이스에 없습니다.")
+        
         
 
     @commands.command(name = "레벨테스트")
