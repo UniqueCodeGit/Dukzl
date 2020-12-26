@@ -183,21 +183,25 @@ class DukzlCog(commands.Cog):
                 value = f"{d}"
             )
             d = (lambda x: "(없음)" if x == "" else x)(data['birthday'])
+            
             embed.add_field(
                 name = "생일",
                 value = f"{d}"
             )
-            d = (lambda x: "(없음)" if x == "" else x)(f"[클릭]({data['instagram']})")
+            d = (lambda x: "(없음)" if x == "" else x)(f"{data['instagram']}")
+            d = (lambda x: "(없음)" if x == "(없음)" else f"[클릭]({x})")(d)
             embed.add_field(
                 name = "인스타그램",
                 value = f"{d}"
             )
-            d = (lambda x: "(없음)" if x == "" else x)(f"[클릭]({data['melon']})")
+            d = (lambda x: "(없음)" if x == "" else x)(f"{data['melon']}")
+            d = (lambda x: "(없음)" if x == "(없음)" else f"[클릭]({x})")(d)
             embed.add_field(
                 name = "멜론",
                 value = f"{d}"
             )
-            d = (lambda x: "(없음)" if x == "" else x)(f"[클릭]({data['youtube']})")
+            d = (lambda x: "(없음)" if x == "" else x)(f"{data['youtube']}")
+            d = (lambda x: "(없음)" if x == "(없음)" else f"[클릭]({x})")(d)
             embed.add_field(
                 name = "유튜브",
                 value = f"{d}"
@@ -226,11 +230,11 @@ class DukzlCog(commands.Cog):
                 return await ctx.send(embed=embed)
             if element == "생일":
                 try:
-                    obj = datetime.datetime.strptime(obj, "%Y%m%d")
+                    obj = datetime.datetime.strptime(obj, "%Y-%m-%d")
                     obj = obj.strftime("%Y년 %m월 %d일")
                     self.Artists.EditElement(artist, "birthday", obj)
                 except ValueError:
-                    return await ctx.send ("생일은 YYYYMMDD (예시 : 20200101) 형식으로 입력해주세요.")
+                    return await ctx.send ("생일은 YYYY-MM-DD (예시 : 2020-01-01) 형식으로 입력해주세요.")
             if element == "본명":
                 self.Artists.EditElement(artist, "real_name", obj)
             elif element == "인스타그램":
