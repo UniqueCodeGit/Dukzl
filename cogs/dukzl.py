@@ -25,6 +25,23 @@ class DukzlCog(commands.Cog):
         )
         await ctx.send (embed=embed)
 
+    @commands.command(name = "탈덕")
+    async def removeartist (self, ctx, artist):
+        if not self.Users.CheckRegistered(ctx.author):
+            return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
+        if not self.Users.CheckArtistExists(ctx.author, artist):
+            return await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요.")
+        await ctx.send ("정말로 탈덕하시겠습니까? 탈덕하시려면 `탈덕` 을 입력하주세요.")
+        response = await self.bot.wait_for (
+            "message", 
+            check=lambda message: message.author == ctx.author,
+            timeout = 60
+        )
+        if response.content == "탈덕":
+            self.Users.RemoveArtist(ctx.author, artist)
+            await ctx.send ("성공적으로 탈덕하였습니다.")
+        else: await ctx.send ("탈덕을 취소하였습니다.")
+
     @commands.command(name = "가수추가")
     async def addartist (self, ctx, artist):
         if not self.Users.CheckRegistered(ctx.author):

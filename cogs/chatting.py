@@ -54,16 +54,19 @@ class Chatting(commands.Cog):
             name = "`$가수추가 (가수이름)`", value = "나의 덕질 목록에 가수를 한명 추가합니다.", inline=False
         )
         embed1.add_field(
+            name = "`$탈덕 (가수이름)`", value = "해당 가수를 탈덕합니다.", inline=False
+        )
+        embed1.add_field(
             name = "`$내정보`", value = "나의 서비스 이용 상태를 확인할 수 있습니다.", inline=False
         )
         embed1.add_field(
             name = "`$덕질정보 (가수이름)`", value = "해당 가수에 대한 내 덕질 현황을 볼 수 있습니다.", inline=False
         )
         embed1.add_field(
-            name = "`$플리추가 (가수이름) (유튜브 URL)`", value = "해당 유튜브 링크를 덕질 플레이리스트에 추가합니다.", inline=False
+            name = "`$플리추가 (가수이름) (유튜브 URL 혹은 키워드)`", value = "해당 유튜브 링크를 덕질 플레이리스트에 추가합니다.", inline=False
         )
         embed1.add_field(
-            name = "`$플리삭제 (가수이름) (유튜브 URL)`", value = "해당 유튜브 링크를 덕질 플레이리스트에서 삭제합니다.", inline=False
+            name = "`$플리삭제 (가수이름) (유튜브 URL 혹은 키워드)`", value = "해당 유튜브 링크를 덕질 플레이리스트에서 삭제합니다.", inline=False
         )
         embed1.add_field(
             name = "`$플리리셋 (가수이름)`", value = "해당 가수의 덕질 플레이리스트를 리셋합니다.", inline=False

@@ -64,6 +64,19 @@ class DukzlUsers:
             json.dump(UserData, f)
 
     @staticmethod
+    def RemoveArtist(user, artist):
+        with open(f"users/{user.id}.json", "r") as f:
+            UserData = json.load(f)
+        _ = artist
+        artist = ConvertName(artist)
+        for artists in UserData["artists"]:
+            if artists["identifier"] == artist:   
+                UserData["artists"].remove(artists)
+        UserData["artistlist"].remove(_)
+        with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
+            json.dump(UserData, f)
+
+    @staticmethod
     def ReturnJson(user):
         with open(f"users/{user.id}.json", "r") as f:
             UserData = json.load(f)
