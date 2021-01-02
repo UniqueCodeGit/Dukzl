@@ -135,6 +135,9 @@ class Chatting(commands.Cog):
             name = "`$정보`", value = "봇의 정보를 출력합니다.", inline=False
         )
         embed4.add_field(
+            name = "`$초대링크`", value = "봇의 초대링크 입니다.", inline=False
+        )
+        embed4.add_field(
             name = "`$도움`", value = "이 명령어 입니다.", inline=False
         )
         embeds = [embed, embed1, embed2, embed3, embed4]

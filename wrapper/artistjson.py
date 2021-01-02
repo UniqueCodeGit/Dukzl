@@ -16,10 +16,15 @@ class DukzlArtist:
             "name" : f"{real_name}",
             "real_name" : "",
             "birthday" : "",
+            "height" : "",
+            "weight" : "",
+            "song" : "",
             "instagram" : "",
             "melon" : "",
             "youtube" : "",
-            "profilepic" : ""
+            "soundcloud" : "",
+            "profilepic" : "",
+            "company" : ""
         }
         with open(f"artists/{real_name}.json", "w", encoding="utf-8") as f:
             json.dump(default_data, f)

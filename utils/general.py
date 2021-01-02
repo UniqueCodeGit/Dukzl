@@ -19,4 +19,31 @@ class GenerelUtils:
             ]
         for i in command_list:
             command_name = "cogs." + i.replace(".py", "")
-            bot.reload_extension(command_name)
+            try:
+                bot.reload_extension(command_name)
+            except Exception: pass
+
+    @staticmethod
+    def AutoCommandsload(bot):
+        command_list = os.listdir("cogs/")
+        command_list = [
+            command for command in command_list if command.endswith(".py")
+            ]
+        for i in command_list:
+            command_name = "cogs." + i.replace(".py", "")
+            try:
+                bot.load_extension(command_name)
+            except Exception: pass
+
+
+    @staticmethod
+    def AutoCommandsunload(bot):
+        command_list = os.listdir("cogs/")
+        command_list = [
+            command for command in command_list if command.endswith(".py")
+            ]
+        for i in command_list:
+            command_name = "cogs." + i.replace(".py", "")
+            try:
+                bot.unload_extension(command_name)
+            except Exception: pass

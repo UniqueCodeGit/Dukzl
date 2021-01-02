@@ -54,7 +54,7 @@ class DukzlUsers:
         default_data = {
             "name" : artist,
             "identifier" : identify,
-            "level" : 1,
+            "level" : 0,
             "started-date" : startDate,
             "playlist" : []
         }

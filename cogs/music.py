@@ -42,8 +42,8 @@ class Music(commands.Cog):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         for i in query:
             i = i.strip('<>')
-            if not url_rx.match(i):
-                i = f'ytsearch:{i}'
+            #if not url_rx.match(i):
+                #i = f'{i}'
             results = await player.node.get_tracks(i)
             if not results or not results['tracks']:
                 return await ctx.send(f'재생목록에서 {i}를 넣는데 실패하였습니다.')
@@ -73,8 +73,8 @@ class Music(commands.Cog):
     async def play(self, ctx, *, query: str):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         query = query.strip('<>')
-        if not url_rx.match(query):
-            query = f'ytsearch:{query}'
+        #if not url_rx.match(query):
+        #    query = f'ytsearch:{query}'
         results = await player.node.get_tracks(query)
         if not results or not results['tracks']:
             return await ctx.send(f'재생목록에서 {query}를 넣는데 실패하였습니다.')

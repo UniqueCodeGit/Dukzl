@@ -11,7 +11,7 @@ class DukzlCog(commands.Cog):
         self.bot = bot
         self.Users = DukzlUsers()
         self.Artists = DukzlArtist()
-        self.ElementList = ['생일', '인스타그램', '멜론', '유튜브', '본명', '프로필사진', '프사']
+        self.ElementList = ['생일', '인스타그램', '멜론', '유튜브', '본명', '프로필사진', '프사', '대표곡', '사클', '키', '몸무게', '소속사', '생년월일', '인스타', '유튭', '사운드클라우드', '회사']
 
     @commands.command(name = "가입")
     async def register (self, ctx):
@@ -252,9 +252,9 @@ class DukzlCog(commands.Cog):
                     self.Artists.EditElement(artist, "birthday", obj)
                 except ValueError:
                     return await ctx.send ("생일은 YYYY-MM-DD (예시 : 2020-01-01) 형식으로 입력해주세요.")
-            if element == "본명":
+            if element == "본명" or element == "이름":
                 self.Artists.EditElement(artist, "real_name", obj)
-            elif element == "인스타그램":
+            elif element == "인스타그램" or element == "인스타" :
                 self.Artists.EditElement(artist, "instagram", obj)
             elif element == "유튜브":
                 self.Artists.EditElement(artist, "youtube", obj)
@@ -264,14 +264,13 @@ class DukzlCog(commands.Cog):
                 self.Artists.EditElement(artist, "profilepic", obj)
             await ctx.send ("성공적으로 가수 정보를 수정하였습니다.")
         except FileNotFoundError: await ctx.send("해당 가수가 덕질봇 데이터베이스에 없습니다.")
-        
-        
-
-    @commands.command(name = "레벨테스트")
-    @commands.is_owner()
-    async def leveltest(self, ctx, amount, *, artist):
-        self.Users.LevelUp(ctx.author,amount,artist)
-
+        except IndexError:
+            embed = discord.Embed (
+                title = "에러 발생!",
+                description = "$정보추가 `가수` `수정할 항목` `내용`으로 제대로 압력했는지 확인해주세요.",
+                color = COLOR
+            )
+            await ctx.send (embed=embed)
 
 
 def setup (bot):
