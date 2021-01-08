@@ -1,6 +1,6 @@
 from discord.ext import commands
 
-from utils.general import GenerelUtils
+from . import load_extensions, unload_extensions, reload_extensions
 
 
 class Owners(commands.Cog):
@@ -10,7 +10,7 @@ class Owners(commands.Cog):
     @commands.command(name="리로드", aliases=["reload"])
     @commands.is_owner()
     async def reload_cogs(self, ctx):
-        GenerelUtils.AutoCommandsReload(self.bot)
+        reload_extensions(self.bot)
         await ctx.send("Reload Complete")
 
     @commands.command(name="언로드", aliases=["unload"])
@@ -21,7 +21,7 @@ class Owners(commands.Cog):
     @commands.command(name="로드", aliases=["load"])
     @commands.is_owner()
     async def load_cogs(self, ctx):
-        GenerelUtils.AutoCommandsload(self.bot)
+        load_extensions(self.bot)
         await ctx.send("Load Complete")
 
 

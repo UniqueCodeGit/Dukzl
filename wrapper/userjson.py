@@ -1,24 +1,28 @@
-import os.path
-import json
 import datetime
+import aiomysql
+import json
+import os.path
+
 
 def ConvertName(name):
     name = name.replace(" ", "")
     name = name.lower()
     return name
 
+
 class DukzlUsers:
-    def __init__(self): pass
+    def __init__(self):
+        pass
 
     @staticmethod
     def RegisterUser(user):
         serviceregDate = datetime.datetime.today().strftime("%Y년 %m월 %d일")
         default_data = {
-            "name" : f"{user.name}",
-            "id" : user.id,
-            "started-date" : serviceregDate,
-            "artists" : [],
-            "artistlist" : []
+            "name": f"{user.name}",
+            "id": user.id,
+            "started-date": serviceregDate,
+            "artists": [],
+            "artistlist": []
         }
         with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
             json.dump(default_data, f)
@@ -52,11 +56,11 @@ class DukzlUsers:
         startDate = datetime.datetime.today().strftime("%Y년 %m월 %d일")
         identify = ConvertName(artist)
         default_data = {
-            "name" : artist,
-            "identifier" : identify,
-            "level" : 0,
-            "started-date" : startDate,
-            "playlist" : []
+            "name": artist,
+            "identifier": identify,
+            "level": 0,
+            "started-date": startDate,
+            "playlist": []
         }
         UserData["artists"].append(default_data)
         UserData["artistlist"].append(artist)
@@ -70,7 +74,7 @@ class DukzlUsers:
         _ = artist
         artist = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["identifier"] == artist:   
+            if artists["identifier"] == artist:
                 UserData["artists"].remove(artists)
         UserData["artistlist"].remove(_)
         with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
@@ -88,7 +92,7 @@ class DukzlUsers:
             UserData = json.load(f)
         artist = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["identifier"] == artist:   
+            if artists["identifier"] == artist:
                 artists["playlist"].append(url)
         with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
             json.dump(UserData, f)
@@ -99,7 +103,7 @@ class DukzlUsers:
             UserData = json.load(f)
         artist = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["identifier"] == artist:   
+            if artists["identifier"] == artist:
                 artists["playlist"].remove(url)
         with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
             json.dump(UserData, f)
@@ -110,7 +114,7 @@ class DukzlUsers:
             UserData = json.load(f)
         artist = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["identifier"] == artist:   
+            if artists["identifier"] == artist:
                 artists["playlist"] = []
         with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
             json.dump(UserData, f)
@@ -121,7 +125,7 @@ class DukzlUsers:
             UserData = json.load(f)
         artist = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["identifier"] == artist:   
+            if artists["identifier"] == artist:
                 return artists["playlist"]
 
     @staticmethod

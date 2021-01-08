@@ -1,10 +1,12 @@
 import json
 import os.path
 
+
 def ConvertName(name):
     name = name.replace(" ", "")
     name = name.lower()
     return name
+
 
 class DukzlArtist:
     def __init__(self): pass
@@ -13,18 +15,18 @@ class DukzlArtist:
     def MakeArtistJson(artist):
         real_name = ConvertName(artist)
         default_data = {
-            "name" : f"{real_name}",
-            "real_name" : "",
-            "birthday" : "",
-            "height" : "",
-            "weight" : "",
-            "song" : "",
-            "instagram" : "",
-            "melon" : "",
-            "youtube" : "",
-            "soundcloud" : "",
-            "profilepic" : "",
-            "company" : ""
+            "name": f"{real_name}",
+            "real_name": "",
+            "birthday": "",
+            "height": "",
+            "weight": "",
+            "song": "",
+            "instagram": "",
+            "melon": "",
+            "youtube": "",
+            "soundcloud": "",
+            "profilepic": "",
+            "company": ""
         }
         with open(f"artists/{real_name}.json", "w", encoding="utf-8") as f:
             json.dump(default_data, f)

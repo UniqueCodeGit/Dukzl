@@ -4,6 +4,7 @@ FORMATTER = logging.Formatter(
     "[%(levelname)s][%(name)s][%(asctime)s]: %(message)s"
 )
 
+
 class Logger:
     @staticmethod
     def basicLogger(cog):

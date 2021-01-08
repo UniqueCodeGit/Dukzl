@@ -1,9 +1,11 @@
 from __future__ import annotations
-from logging import WARN
+
 from typing import Optional
-from config import COLOR
+
 import discord
 from discord.ext.commands.context import Context
+
+from config import COLOR
 
 DEFAULT_COLOR = COLOR
 WARN_COLOR = 0xD8EF56
@@ -18,10 +20,10 @@ class Embed(discord.Embed):
 
     @classmethod
     def default(
-        cls,
-        title: Optional[str] = None,
-        description: Optional[str] = None,
-        **kwargs,
+            cls,
+            title: Optional[str] = None,
+            description: Optional[str] = None,
+            **kwargs,
     ) -> Embed:
         self = cls.__new__(cls)
         self.__init__(title=f"{title}", description=description, **kwargs)
@@ -29,10 +31,10 @@ class Embed(discord.Embed):
 
     @classmethod
     def warn(
-        cls,
-        title: Optional[str] = None,
-        description: Optional[str] = None,
-        **kwargs,
+            cls,
+            title: Optional[str] = None,
+            description: Optional[str] = None,
+            **kwargs,
     ) -> Embed:
         self = cls.__new__(cls)
         self.__init__(
@@ -45,10 +47,10 @@ class Embed(discord.Embed):
 
     @classmethod
     def error(
-        cls,
-        title: Optional[str] = None,
-        description: Optional[str] = None,
-        **kwargs,
+            cls,
+            title: Optional[str] = None,
+            description: Optional[str] = None,
+            **kwargs,
     ) -> Embed:
         self = cls.__new__(cls)
         self.__init__(
