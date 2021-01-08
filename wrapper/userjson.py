@@ -1,5 +1,7 @@
 import datetime
 import aiomysql
+import config
+import asyncio
 import json
 import os.path
 
@@ -12,10 +14,20 @@ def ConvertName(name):
 
 class DukzlUsers:
     def __init__(self):
-        pass
+        self.loop = asyncio.get_event_loop()
 
-    @staticmethod
-    def RegisterUser(user):
+    async def connect_db(self):
+        self.db = await aiomysql.create_pool (
+            host=config.DB_IP,
+            user=config.DB_USER,
+            password=config.DB_PW,
+            db="leehi",
+            autocommit=True,
+            loop=self.loop,
+            charset="utf8mb4"
+        )
+    
+    async def RegisterUser(self, user):
         serviceregDate = datetime.datetime.today().strftime("%Y년 %m월 %d일")
         default_data = {
             "name": f"{user.name}",
@@ -27,21 +39,21 @@ class DukzlUsers:
         with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
             json.dump(default_data, f)
 
-    @staticmethod
-    def CheckRegistered(user):
+    
+    async def CheckRegistered(self, user):
         if os.path.isfile(f"users/{user.id}.json"):
             return True
         return False
 
     @staticmethod
-    def CheckArtistJson(artist):
+    async def CheckArtistJson(artist):
         rn = ConvertName(artist)
         if os.path.isfile(f"artists/{rn}.json"):
             return True
         return False
 
     @staticmethod
-    def CheckArtistExists(user, artist):
+    async def CheckArtistExists(user, artist):
         with open(f"users/{user.id}.json", "r") as f:
             UserData = json.load(f)
         converted = ConvertName(artist)
@@ -50,7 +62,7 @@ class DukzlUsers:
         return False
 
     @staticmethod
-    def AddArtist(user, artist):
+    async def AddArtist(user, artist):
         with open(f"users/{user.id}.json", "r") as f:
             UserData = json.load(f)
         startDate = datetime.datetime.today().strftime("%Y년 %m월 %d일")
@@ -68,7 +80,7 @@ class DukzlUsers:
             json.dump(UserData, f)
 
     @staticmethod
-    def RemoveArtist(user, artist):
+    async def RemoveArtist(user, artist):
         with open(f"users/{user.id}.json", "r") as f:
             UserData = json.load(f)
         _ = artist
@@ -81,13 +93,13 @@ class DukzlUsers:
             json.dump(UserData, f)
 
     @staticmethod
-    def ReturnJson(user):
+    async def ReturnJson(user):
         with open(f"users/{user.id}.json", "r") as f:
             UserData = json.load(f)
         return UserData
 
     @staticmethod
-    def AddPlaylist(user, artist, url):
+    async def AddPlaylist(user, artist, url):
         with open(f"users/{user.id}.json", "r") as f:
             UserData = json.load(f)
         artist = ConvertName(artist)
@@ -98,7 +110,7 @@ class DukzlUsers:
             json.dump(UserData, f)
 
     @staticmethod
-    def RemovePlaylist(user, artist, url):
+    async def RemovePlaylist(user, artist, url):
         with open(f"users/{user.id}.json", "r") as f:
             UserData = json.load(f)
         artist = ConvertName(artist)
@@ -109,7 +121,7 @@ class DukzlUsers:
             json.dump(UserData, f)
 
     @staticmethod
-    def ResetPlaylist(user, artist):
+    async def ResetPlaylist(user, artist):
         with open(f"users/{user.id}.json", "r") as f:
             UserData = json.load(f)
         artist = ConvertName(artist)
@@ -120,7 +132,7 @@ class DukzlUsers:
             json.dump(UserData, f)
 
     @staticmethod
-    def ReturnPlaylist(user, artist):
+    async def ReturnPlaylist(user, artist):
         with open(f"users/{user.id}.json", "r") as f:
             UserData = json.load(f)
         artist = ConvertName(artist)
@@ -129,7 +141,7 @@ class DukzlUsers:
                 return artists["playlist"]
 
     @staticmethod
-    def LevelUp(user, amount, artist):
+    async def LevelUp(user, amount, artist):
         with open(f"users/{user.id}.json", "r") as f:
             UserData = json.load(f)
         amount = float(amount)
