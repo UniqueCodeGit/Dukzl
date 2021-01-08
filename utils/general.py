@@ -1,8 +1,6 @@
 import os
 
 class GenerelUtils:
-    def __init__(self): pass
-
     @staticmethod
     def AutoCommands(bot):
         command_list = os.listdir("cogs/")

@@ -2,29 +2,33 @@ import discord
 from discord.ext import commands
 from config import TOKEN, COLOR
 from utils.general import GenerelUtils
+from log import Logger
 
 class Dukzl(commands.Bot):
     def __init__(self):
         super().__init__(
             command_prefix=["$"],
             help_command=None,
-            activity = discord.Game("$도움 | 덕질의 세계는 신기해요.."),
+            activity = discord.Game("$도움 | Dukzl 1.0"),
             intents=discord.Intents.all()
         )
         GenerelUtils.AutoCommands(self)
+        self.logger = Logger.basicLogger(self)
+        self.discordLogger = Logger.discordLogger()
 
     async def on_message(self, message):
         if not message.author.bot:
             return await self.process_commands(message)
 
     async def on_ready(self):
-        print (f"{self.user.name}")
+        self.logger.info(f"Dukzl loaded as {self.user.name}")
 
     async def on_command_error(self, context, exception):
+        
         if isinstance (exception, commands.CommandInvokeError):
             embed = discord.Embed(
                 title = f"{context.command.name} 수행 중 에러 발생!",
-                description = "금방 고칠게요 죄송합니다 ㅠ",
+                description = "UniqueCode 서포트 서버로 와서 에러 내용을 제보해주세요!",
                 color = COLOR
             )
             embed.add_field (

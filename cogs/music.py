@@ -1,22 +1,26 @@
 import math
+import random
 import re
+
 import discord
 import lavalink
-import random
 from discord.ext import commands
-from wrapper.userjson import DukzlUsers
-from config import COLOR
 
-url_rx = re.compile('https?:\\/\\/(?:www\\.)?.+') 
+from config import COLOR
+from wrapper.userjson import DukzlUsers
+
+url_rx = re.compile('https?:\\/\\/(?:www\\.)?.+')
+
+
 class Music(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self._ = 791673162046767124
         self.Users = DukzlUsers()
         self.normal_color = COLOR
-        if not hasattr(bot, 'lavalink'): 
+        if not hasattr(bot, 'lavalink'):
             bot.lavalink = lavalink.Client(self._)
-            bot.lavalink.add_node('localhost', 2333, 'youshallnotpass', 'eu') 
+            bot.lavalink.add_node('localhost', 2333, 'youshallnotpass', 'eu')
             bot.add_listener(bot.lavalink.voice_update_handler, 'on_socket_response')
         bot.lavalink.add_event_hook(self.track_hook)
 
@@ -42,8 +46,8 @@ class Music(commands.Cog):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         for i in query:
             i = i.strip('<>')
-            #if not url_rx.match(i):
-                #i = f'{i}'
+            # if not url_rx.match(i):
+            # i = f'{i}'
             results = await player.node.get_tracks(i)
             if not results or not results['tracks']:
                 return await ctx.send(f'재생목록에서 {i}를 넣는데 실패하였습니다.')
@@ -55,17 +59,17 @@ class Music(commands.Cog):
                 track = results['tracks'][0]
                 player.add(requester=ctx.author.id, track=track)
 
-    @commands.command(name = "플레이리스트재생", aliases=['플리재생'])
+    @commands.command(name="플레이리스트재생", aliases=['플리재생'])
     async def play_playlist(self, ctx, artist):
         if not self.Users.CheckRegistered(ctx.author):
-            return await ctx.send ("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
+            return await ctx.send("가입이 안된 유저입니다. `$가입`을 통해 덕질봇에 가입하시고 모든 서비스를 누려보세요!")
         if not self.Users.CheckArtistExists(ctx.author, artist):
-            return await ctx.send ("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요.")
-        self.Users.LevelUp(ctx.author, round(random.uniform(4,5),1), artist)
+            return await ctx.send("해당 가수는 덕질하지 않습니다. 가수를 올바르게 입력했는지 확인해주세요.")
+        self.Users.LevelUp(ctx.author, round(random.uniform(4, 5), 1), artist)
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         data = self.Users.ReturnPlaylist(ctx.author, artist)
         await self.queue_add(ctx, data)
-        await ctx.send (f"{artist} 플레이리스트를 재생목록에 추가하였습니다.")
+        await ctx.send(f"{artist} 플레이리스트를 재생목록에 추가하였습니다.")
         if not player.is_playing:
             await player.play()
 
@@ -73,7 +77,7 @@ class Music(commands.Cog):
     async def play(self, ctx, *, query: str):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         query = query.strip('<>')
-        #if not url_rx.match(query):
+        # if not url_rx.match(query):
         #    query = f'ytsearch:{query}'
         results = await player.node.get_tracks(query)
         if not results or not results['tracks']:
@@ -85,16 +89,16 @@ class Music(commands.Cog):
                 player.add(requester=ctx.author.id, track=track)
             embed.title = '플레이리스트 로드 완료!'
             embed.description = '성공적으로 플레이리스트를 로드했습니다.'
-            embed.add_field (name = "이름", value=f'{results["playlistInfo"]["name"]}', inline=True)
-            embed.add_field (name="곡 수", value=str(len(tracks))+"개", inline=True)
-            embed.add_field (name = "요청자", value=f"<@!{ctx.author.id}>", inline=True)
+            embed.add_field(name="이름", value=f'{results["playlistInfo"]["name"]}', inline=True)
+            embed.add_field(name="곡 수", value=str(len(tracks)) + "개", inline=True)
+            embed.add_field(name="요청자", value=f"<@!{ctx.author.id}>", inline=True)
         else:
             track = results['tracks'][0]
             embed.title = '트랙 로드 완료!'
             embed.description = f'```{track["info"]["title"]}```'
-            embed.add_field (name="URL", value=f'[클릭]({track["info"]["uri"]})', inline=True)
-            embed.add_field (name = "요청자", value=f"<@!{ctx.author.id}>", inline=True)
-            embed.add_field (name = "길이", value = f'{lavalink.utils.format_time(track["info"]["length"])}', inline=True)
+            embed.add_field(name="URL", value=f'[클릭]({track["info"]["uri"]})', inline=True)
+            embed.add_field(name="요청자", value=f"<@!{ctx.author.id}>", inline=True)
+            embed.add_field(name="길이", value=f'{lavalink.utils.format_time(track["info"]["length"])}', inline=True)
             embed.set_thumbnail(url=f'https://i.ytimg.com/vi/{track["info"]["identifier"]}/hqdefault.jpg')
             player.add(requester=ctx.author.id, track=track)
         await ctx.send(embed=embed)
@@ -118,7 +122,6 @@ class Music(commands.Cog):
         await player.stop()
         await ctx.message.add_reaction('\U00002705')
 
-
     @commands.command(aliases=['np', 'n', 'playing'])
     async def now(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
@@ -131,18 +134,18 @@ class Music(commands.Cog):
             duration = lavalink.utils.format_time(player.current.duration)
         embed = discord.Embed(color=self.normal_color,
                               title='현재 플레이 중',
-                              description = f"```{player.current.title}```")
-        embed.add_field (
-            name = "URL",
-            value = f"[클릭]({player.current.uri})"
+                              description=f"```{player.current.title}```")
+        embed.add_field(
+            name="URL",
+            value=f"[클릭]({player.current.uri})"
         )
-        embed.add_field (
-            name = "위치",
-            value = f"{position}/{duration}"
+        embed.add_field(
+            name="위치",
+            value=f"{position}/{duration}"
         )
-        embed.add_field (
-            name = "요청자",
-            value = f"<@!{player.current.requester}>"
+        embed.add_field(
+            name="요청자",
+            value=f"<@!{player.current.requester}>"
         )
         embed.set_thumbnail(url=f'https://i.ytimg.com/vi/{player.current.identifier}/hqdefault.jpg')
         await ctx.send(embed=embed)
@@ -180,7 +183,7 @@ class Music(commands.Cog):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         if not volume:
             return await ctx.send(f'현재 볼륨 : {player.volume}%')
-        await player.set_volume(volume) 
+        await player.set_volume(volume)
         await ctx.send(f'볼륨을 {player.volume}% 으로 설정하였습니다.')
 
     @commands.command()
@@ -230,14 +233,14 @@ class Music(commands.Cog):
         if not player.is_connected:
             if should_connect2:
                 permissions = ctx.author.voice.channel.permissions_for(ctx.me)
-                if not permissions.connect or not permissions.speak:  
+                if not permissions.connect or not permissions.speak:
                     raise commands.CommandInvokeError('권한이 없습니다! (Connect, Speak 권한을 주세요!)')
                 player.store('channel', ctx.channel.id)
                 return await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
             if not should_connect:
                 raise commands.CommandInvokeError('봇이 연결되지 않았습니다.')
             permissions = ctx.author.voice.channel.permissions_for(ctx.me)
-            if not permissions.connect or not permissions.speak:  
+            if not permissions.connect or not permissions.speak:
                 raise commands.CommandInvokeError('권한이 없습니다! (Connect, Speak 권한을 주세요!)')
             player.store('channel', ctx.channel.id)
             await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))

@@ -1,12 +1,11 @@
 from __future__ import annotations
-
 from logging import WARN
 from typing import Optional
-
+from config import COLOR
 import discord
 from discord.ext.commands.context import Context
 
-DEFAULT_COLOR = 0x00FF00
+DEFAULT_COLOR = COLOR
 WARN_COLOR = 0xD8EF56
 ERROR_COLOR = 0xFF0909
 
