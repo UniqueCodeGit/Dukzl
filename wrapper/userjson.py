@@ -1,5 +1,4 @@
 import datetime
-import aiomysql
 import config
 import asyncio
 import json
@@ -16,17 +15,6 @@ class DukzlUsers:
     def __init__(self):
         self.loop = asyncio.get_event_loop()
 
-    async def connect_db(self):
-        self.db = await aiomysql.create_pool (
-            host=config.DB_IP,
-            user=config.DB_USER,
-            password=config.DB_PW,
-            db="leehi",
-            autocommit=True,
-            loop=self.loop,
-            charset="utf8mb4"
-        )
-    
     async def RegisterUser(self, user):
         serviceregDate = datetime.datetime.today().strftime("%Y년 %m월 %d일")
         default_data = {
@@ -34,12 +22,11 @@ class DukzlUsers:
             "id": user.id,
             "started-date": serviceregDate,
             "artists": [],
-            "artistlist": []
+            "artistlist": [],
         }
         with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
             json.dump(default_data, f)
 
-    
     async def CheckRegistered(self, user):
         if os.path.isfile(f"users/{user.id}.json"):
             return True
@@ -58,7 +45,8 @@ class DukzlUsers:
             UserData = json.load(f)
         converted = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["identifier"] == converted: return True
+            if artists["identifier"] == converted:
+                return True
         return False
 
     @staticmethod
@@ -72,7 +60,7 @@ class DukzlUsers:
             "identifier": identify,
             "level": 0,
             "started-date": startDate,
-            "playlist": []
+            "playlist": [],
         }
         UserData["artists"].append(default_data)
         UserData["artistlist"].append(artist)

@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 
 config.py
+artists/
+users/
+logs/

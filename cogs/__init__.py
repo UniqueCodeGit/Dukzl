@@ -13,35 +13,12 @@ async def start_discodo() -> Any:
 
 
 def load_extensions(bot: commands.Bot) -> None:
-    cmdlist = os.listdir('cogs/')
+    cmdlist = os.listdir("cogs/")
     for i in cmdlist:
         if i.endswith(".py") and not i.startswith("__"):
             cmdname = f"cogs.{i.replace('.py', '')}"
             bot.load_extension(cmdname)
-
-
-def reload_extensions(bot: commands.Bot) -> None:
-    cmdlist = os.listdir('cogs/')
-    for i in cmdlist:
-        if i.endswith(".py") and not i.startswith("__"):
-            cmdname = f"cogs.{i.replace('.py', '')}"
-            try:
-                if not i == "owners.py":
-                    bot.reload_extension(cmdname)
-            except Exception:
-                pass
-
-
-def unload_extensions(bot: commands.Bot) -> None:
-    cmdlist = os.listdir('cogs/')
-    for i in cmdlist:
-        if i.endswith(".py") and not i.startswith("__"):
-            cmdname = f"cogs.{i.replace('.py', '')}"
-            try:
-                if not i == "owners.py":
-                    bot.unload_extension(cmdname)
-            except Exception:
-                pass
+    bot.load_extension("jishaku")
 
 
 async def is_owner(ctx: commands.Context) -> bool:
