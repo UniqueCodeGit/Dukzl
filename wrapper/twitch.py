@@ -33,7 +33,7 @@ class TwitchAPI:
 
         headers = {
             "Authorization": f"Bearer {token}",
-            "Client-ID": "j25n97ram758w1uovowgj6zavmi3r5",
+            "Client-ID": f"{CLIENT_ID}",
         }
 
         cls.logger.info(f"Helix user requests reported. ID : {id}")
@@ -47,7 +47,7 @@ class TwitchAPI:
         token = await cls.get_twitch_token()
         headers = {
             "Authorization": f"Bearer {token}",
-            "Client-ID": "j25n97ram758w1uovowgj6zavmi3r5",
+            "Client-ID": f"{CLIENT_ID}",
         }
         cls.logger.info(f"Helix streams request reported. ID : {id}")
         response = await cls.HTTP.request(
@@ -69,7 +69,7 @@ class TwitchAPI:
         token = await cls.get_twitch_token()
         headers = {
             "Authorization": f"Bearer {token}",
-            "Client-ID": "j25n97ram758w1uovowgj6zavmi3r5",
+            "Client-ID": f"{CLIENT_ID}",
         }
         cls.logger.info(f"Helix game (find by name) request reported. NAME : {id}")
         response = await cls.HTTP.request(
