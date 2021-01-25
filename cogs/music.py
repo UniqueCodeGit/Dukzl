@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 from . import check_voice
-from utils.embed import Embed
 from log import Log
 
 
@@ -13,10 +12,10 @@ class MainCog(commands.Cog):
     @commands.command(name="join")
     async def join(self, ctx):
         if not ctx.message.author.voice:
-            embed = Embed.warn(title="먼저 음성 채널에 들어와주세요!")
+            embed = discord.Embed(title="먼저 음성 채널에 들어와주세요!")
             return await ctx.send(embed=embed)
         await self.bot.Wonstein.connect(ctx.message.author.voice.channel)
-        embed = Embed.default(
+        embed = discord.Embed(
             title=f"성공적으로 {ctx.message.author.voice.channel}에 연결했습니다."
         )
         await ctx.send(embed=embed)
@@ -27,7 +26,7 @@ class MainCog(commands.Cog):
         Audio = self.bot.Wonstein.getVC(ctx.guild.id)
         await Audio.setAutoplay(False)
         if not Audio:
-            embed = Embed.warn(title="먼저 `!join`을 입력해주세요.")
+            embed = discord.Embed(title="먼저 `!join`을 입력해주세요.")
             return await ctx.send(embed=embed)
         Data = await Audio.loadSource(query)
         if isinstance(Data, list):

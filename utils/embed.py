@@ -1,69 +1,94 @@
-from __future__ import annotations
-
-from typing import Optional
-
 import discord
-from discord.ext.commands.context import Context
-
-from config import COLOR
-
-DEFAULT_COLOR = COLOR
-WARN_COLOR = 0xD8EF56
-ERROR_COLOR = 0xFF0909
+import datetime
+import config
+from dateutil import tz
 
 
-class Embed(discord.Embed):
-    """ Embed utility class (Thanks to BGM) """
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+class EmbedUtil:
+    def __init__(self):
+        pass
 
     @classmethod
-    def default(
-        cls,
-        title: Optional[str] = None,
-        description: Optional[str] = None,
-        **kwargs,
-    ) -> Embed:
-        self = cls.__new__(cls)
-        self.__init__(title=f"{title}", description=description, **kwargs)
-        return self
+    def datetime_to_kr(cls, timestamp) -> str:
+        from_zone = tz.tzutc()
+        to_zone = tz.gettz("Asia/Seoul")
+        d = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+        d = d.replace(tzinfo=from_zone)
+        d = d.astimezone(tz=to_zone)
+        d = d.strftime("%Y년 %m월 %d일 %H시 %M분")
+        return d
 
     @classmethod
-    def warn(
-        cls,
-        title: Optional[str] = None,
-        description: Optional[str] = None,
-        **kwargs,
-    ) -> Embed:
-        self = cls.__new__(cls)
-        self.__init__(
-            title=f"⚠ {title}",
-            description=f"{description}",
-            color=WARN_COLOR,
-            **kwargs,
-        )
-        return self
+    def author(cls, embed=discord.Embed, author=discord.abc.User) -> None:
+        embed.set_author(name=author, icon_url=author.avatar_url)
 
     @classmethod
-    def error(
-        cls,
-        title: Optional[str] = None,
-        description: Optional[str] = None,
-        **kwargs,
-    ) -> Embed:
-        self = cls.__new__(cls)
-        self.__init__(
-            title=f"❌ {title}",
-            description=f"{description}",
-            color=ERROR_COLOR,
-            **kwargs,
-        )
-        return self
+    def footer(cls, embed=discord.Embed) -> None:
+        embed.timestamp = datetime.datetime.utcnow()
+        embed.color = config.COLOR
+        embed.set_footer(text="Dukzl")
 
-    def user_footer(self, ctx: Context) -> Embed:
-        self.set_footer(
-            text=f"{ctx.author} | {ctx.bot.user.name}#{ctx.bot.user.discriminator}",
-            icon_url=ctx.author.avatar_url,
+    @classmethod
+    def twitch_user_embed(cls, data, embed=discord.Embed) -> None:
+        embed.add_field(
+            name="설명",
+            value=(lambda n: "(없음)" if n == "" else n)(data["data"][0]["description"]),
+            inline=False,
         )
-        return self
+        embed.add_field(
+            name="스트리머 타입",
+            value=(lambda broad_type: "파트너" if broad_type == "partner" else "일반")(
+                data["data"][0]["broadcaster_type"]
+            ),
+            inline=True,
+        )
+        embed.add_field(
+            name="API 고유 ID",
+            value=(lambda n: "(없음)" if n == "" else n)(data["data"][0]["id"]),
+            inline=True,
+        )
+        embed.add_field(
+            name="총 조회수",
+            value=(lambda n: "(없음)" if n == "" else n)(data["data"][0]["view_count"]),
+            inline=True,
+        )
+        if data["data"][0]["profile_image_url"]:
+            embed.set_thumbnail(url=data["data"][0]["profile_image_url"])
+        if data["data"][0]["offline_image_url"]:
+            embed.set_image(url=data["data"][0]["offline_image_url"])
+
+    @classmethod
+    def twitch_stream_embed(cls, data, embed: discord.Embed, game) -> None:
+        embed.add_field(
+            name="API 고유 유저 ID",
+            value=(lambda n: "(없음)" if n == "" else n)(data["user_id"]),
+            inline=True,
+        )
+        embed.add_field(
+            name="API 고유 방송 ID",
+            value=(lambda n: "(없음)" if n == "" else n)(data["id"]),
+            inline=True,
+        )
+        if game:
+            embed.add_field(
+                name="게임 이름",
+                value=(lambda n: "(없음)" if n == "" else n)(game["name"]),
+                inline=True,
+            )
+        if data["started_at"]:
+            dd = cls.getDateTime(data["started_at"])
+            embed.add_field(
+                name="시작 시각",
+                value=(lambda n: "(없음)" if n == "" else n)(dd),
+                inline=True,
+            )
+        embed.add_field(
+            name="현재 시청자 수",
+            value=(lambda n: "(없음)" if n == "" else f"{n}명")(data["viewer_count"]),
+            inline=True,
+        )
+        uri = data["thumbnail_url"]
+        uri = uri.replace("{width}", "1920")
+        uri = uri.replace("{height}", "1080")
+        if data["thumbnail_url"] is not None:
+            embed.set_image(url=uri)

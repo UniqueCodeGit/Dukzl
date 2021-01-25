@@ -5,7 +5,6 @@ import os
 import streamlink
 from discord.ext import commands
 from wrapper.twitch import TwitchAPI
-from utils.embed import Embed
 from . import is_owner
 
 
@@ -30,7 +29,7 @@ class Twitch(commands.Cog):
     @commands.check(is_owner)
     async def test_helix_user(self, ctx, id):
         data = await self.Twitch.get_users(id)
-        await ctx.send(f"```{data}```")
+        await ctx.send(f"```json\n{data}```")
 
     @commands.command(name="ID테스트")
     @commands.check(is_owner)
@@ -43,7 +42,7 @@ class Twitch(commands.Cog):
     async def stream_test(self, ctx, id):
         data = await self.Twitch.get_streams(id)
         data = orjson.loads(data)
-        await ctx.send(f'```{data["data"]}```')
+        await ctx.send(f'```json\n{data["data"]}```')
 
     @commands.command(name="게임테스트")
     @commands.check(is_owner)
@@ -51,7 +50,7 @@ class Twitch(commands.Cog):
         id = " ".join(i[:])
         data = await self.Twitch.get_game(id)
         data = orjson.loads(data)
-        await ctx.send(f"```{data}```")
+        await ctx.send(f"```json\n{data}```")
 
     @commands.command(name="체크테스트")
     @commands.check(is_owner)
@@ -65,7 +64,7 @@ class Twitch(commands.Cog):
         data = orjson.loads(data)
         check = await self.Twitch.check_streaming(id)
         try:
-            embed = Embed(title=f'{data["data"][0]["display_name"]} ({id}) 정보')
+            embed = discord.Embed(title=f'{data["data"][0]["display_name"]} ({id}) 정보')
             embed.add_field(
                 name="방송 중",
                 value=(lambda v: "방송중 입니다." if v == True else "방송 중이 아닙니다.")(check),
@@ -86,7 +85,7 @@ class Twitch(commands.Cog):
                 game = orjson.loads(game)
                 game = game["data"][0]
             data = data["data"][0]
-            embed = Embed(title=f'{data["title"]} - {data["user_name"]}')
+            embed = discord.Embed(title=f'{data["title"]} - {data["user_name"]}')
             await ctx.send(embed=embed)
         except (KeyError, IndexError):
             await ctx.send("ID가 바르지 않습니다. 다시 한번 ID를 확인해주세요.")
@@ -123,7 +122,7 @@ class Twitch(commands.Cog):
                 stderr=asyncio.subprocess.PIPE,
             )
             await p.communicate()
-            embed = Embed(title=name).set_image(url=f"attachment://{name}.gif")
+            embed = discord.Embed(title=name).set_image(url=f"attachment://{name}.gif")
             await ctx.send(file=discord.File(f"{name}.gif"), embed=embed)
             try:
                 os.remove(f"{name}.gif")
