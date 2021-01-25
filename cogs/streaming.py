@@ -115,8 +115,8 @@ class Twitch(commands.Cog):
         if check:
             turl = f"https://www.twitch.tv/{name}"
             streams = streamlink.streams(turl)
-            stream = streams["160p"].url
-            ffset = ["ffmpeg", "-i", stream, "-t", "00:00:03", f"{name}.gif"]
+            stream = streams["360p"].url
+            ffset = ["ffmpeg", "-i", stream, "-t", "00:00:05", f"{name}.gif"]
             p = await asyncio.create_subprocess_shell(
                 " ".join(ffset),
                 stdout=asyncio.subprocess.PIPE,
