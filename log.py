@@ -3,7 +3,7 @@ import logging
 FORMATTER = logging.Formatter("[%(levelname)s][%(name)s][%(asctime)s]: %(message)s")
 
 
-class Logger:
+class Log:
     @staticmethod
     def cogLogger(cog) -> logging.Logger:
         name = cog.__class__.__qualname__

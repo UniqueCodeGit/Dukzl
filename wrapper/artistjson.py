@@ -9,7 +9,8 @@ def ConvertName(name):
 
 
 class DukzlArtist:
-    def __init__(self): pass
+    def __init__(self):
+        pass
 
     @staticmethod
     def MakeArtistJson(artist):
@@ -26,7 +27,7 @@ class DukzlArtist:
             "youtube": "",
             "soundcloud": "",
             "profilepic": "",
-            "company": ""
+            "company": "",
         }
         with open(f"artists/{real_name}.json", "w", encoding="utf-8") as f:
             json.dump(default_data, f)

@@ -2,12 +2,12 @@ import datetime
 import orjson
 from utils.parser import Parser
 from config import CLIENT_ID, CLIENT_SECRET
-from log import Logger
+from log import Log
 
 
 class TwitchAPI:
     def __new__(cls):
-        cls.logger = Logger.customLogger("TwitchAPI")
+        cls.logger = Log.defaultLogger("TwitchAPI")
         cls.HTTP = Parser()
         return super().__new__(cls)
 

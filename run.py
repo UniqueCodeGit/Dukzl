@@ -3,7 +3,7 @@ import asyncio
 import discodo
 import config
 from discord.ext import commands
-from log import Logger
+from log import Log
 from cogs import load_extensions
 
 
@@ -16,8 +16,8 @@ class Dukzl(commands.Bot):
             intents=discord.Intents.all(),
         )
         load_extensions(self)
-        self.logger = Logger.cogLogger(self)
-        self.discordLogger = Logger.discordLogger()
+        self.logger = Log.cogLogger(self)
+        self.discordLogger = Log.discordLogger()
         self.Wonstein = discodo.DPYClient(self)
 
     async def on_message(self, message):

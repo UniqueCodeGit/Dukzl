@@ -2,13 +2,13 @@ import discord
 from discord.ext import commands
 from . import check_voice
 from utils.embed import Embed
-from log import Logger
+from log import Log
 
 
 class MainCog(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
-        self.logger = Logger.basicLogger(self)
+        self.logger = Log.cogLogger(self)
 
     @commands.command(name="join")
     async def join(self, ctx):
@@ -42,4 +42,3 @@ class MainCog(commands.Cog):
 
 def setup(bot):
     bot.add_cog(MainCog(bot))
-    bot.Wonstein.register_node("localhost", "6974", password="SEXSEXSEX")
