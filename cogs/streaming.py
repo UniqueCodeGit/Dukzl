@@ -5,6 +5,7 @@ import os
 import streamlink
 from discord.ext import commands
 from wrapper.twitch import TwitchAPI
+from utils.embed import EmbedUtil
 from . import is_owner
 
 
@@ -33,7 +34,7 @@ class Twitch(commands.Cog):
 
     @commands.command(name="ID테스트")
     @commands.check(is_owner)
-    async def getID_test(self, ctx, id):
+    async def api_id_test(self, ctx, id):
         data = await self.Twitch.getID(id)
         await ctx.send(data)
 
@@ -41,15 +42,13 @@ class Twitch(commands.Cog):
     @commands.check(is_owner)
     async def stream_test(self, ctx, id):
         data = await self.Twitch.get_streams(id)
-        data = orjson.loads(data)
-        await ctx.send(f'```json\n{data["data"]}```')
+        await ctx.send(f"```json\n{data}```")
 
     @commands.command(name="게임테스트")
     @commands.check(is_owner)
     async def game_test(self, ctx, *i):
         id = " ".join(i[:])
         data = await self.Twitch.get_game(id)
-        data = orjson.loads(data)
         await ctx.send(f"```json\n{data}```")
 
     @commands.command(name="체크테스트")
@@ -66,10 +65,11 @@ class Twitch(commands.Cog):
         try:
             embed = discord.Embed(title=f'{data["data"][0]["display_name"]} ({id}) 정보')
             embed.add_field(
-                name="방송 중",
-                value=(lambda v: "방송중 입니다." if v == True else "방송 중이 아닙니다.")(check),
+                name="방송 여부",
+                value=(lambda v: "방송 중 입니다." if v == True else "방송 중이 아닙니다.")(check),
                 inline=True,
             )
+            EmbedUtil.twitch_user_embed(data, embed)
             await ctx.send(embed=embed)
         except (KeyError, IndexError):
             await ctx.send("ID가 바르지 않습니다. 다시 한번 ID를 확인해주세요.")
@@ -81,11 +81,12 @@ class Twitch(commands.Cog):
             data = await self.Twitch.get_streams(id)
             data = orjson.loads(data)
             if data["data"][0]["game_id"]:
-                game = await self.Twitch.getGame(data["data"][0]["game_id"])
+                game = await self.Twitch.get_game_byid(data["data"][0]["game_id"])
                 game = orjson.loads(game)
                 game = game["data"][0]
             data = data["data"][0]
             embed = discord.Embed(title=f'{data["title"]} - {data["user_name"]}')
+            EmbedUtil.twitch_stream_embed(data, embed)
             await ctx.send(embed=embed)
         except (KeyError, IndexError):
             await ctx.send("ID가 바르지 않습니다. 다시 한번 ID를 확인해주세요.")

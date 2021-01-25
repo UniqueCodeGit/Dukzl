@@ -58,7 +58,7 @@ class EmbedUtil:
             embed.set_image(url=data["data"][0]["offline_image_url"])
 
     @classmethod
-    def twitch_stream_embed(cls, data, embed: discord.Embed, game) -> None:
+    def twitch_stream_embed(cls, data, embed: discord.Embed, game=None) -> None:
         embed.add_field(
             name="API 고유 유저 ID",
             value=(lambda n: "(없음)" if n == "" else n)(data["user_id"]),
@@ -76,7 +76,7 @@ class EmbedUtil:
                 inline=True,
             )
         if data["started_at"]:
-            dd = cls.getDateTime(data["started_at"])
+            dd = cls.datetime_to_kr(data["started_at"])
             embed.add_field(
                 name="시작 시각",
                 value=(lambda n: "(없음)" if n == "" else n)(dd),

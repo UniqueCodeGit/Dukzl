@@ -76,3 +76,16 @@ class TwitchAPI:
             url=f"https://api.twitch.tv/helix/games?name={id}", header=headers
         )
         return response
+
+    @classmethod
+    async def get_game_byid(cls, id: str):
+        token = await cls.get_twitch_token()
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Client-ID": f"{CLIENT_ID}",
+        }
+        cls.logger.info(f"Helix game (find by id) request reported. ID : {id}")
+        response = await cls.HTTP.request(
+            url=f"https://api.twitch.tv/helix/games?id={id}", header=headers
+        )
+        return response
