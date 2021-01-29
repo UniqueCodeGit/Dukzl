@@ -59,10 +59,7 @@ class TwitchAPI:
     async def check_streaming(cls, id: str) -> bool:
         response = await cls.get_streams(id)
         response = orjson.loads(response)
-        if len(response["data"]) > 0:
-            return True
-        else:
-            return False
+        return len(response["data"]) > 0
 
     @classmethod
     async def get_game(cls, id: str):
