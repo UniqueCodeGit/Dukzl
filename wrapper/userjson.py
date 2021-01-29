@@ -27,17 +27,13 @@ class DukzlUsers:
         with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
             json.dump(default_data, f)
 
-    async def CheckRegistered(self, user):
-        if os.path.isfile(f"users/{user.id}.json"):
-            return True
-        return False
+    def CheckRegistered(self, user):
+        return os.path.isfile(f"users/{user.id}.json")
 
     @staticmethod
-    async def CheckArtistJson(artist):
+    def CheckArtistJson(artist):
         rn = ConvertName(artist)
-        if os.path.isfile(f"artists/{rn}.json"):
-            return True
-        return False
+        return os.path.isfile(f"artists/{rn}.json")
 
     @staticmethod
     async def CheckArtistExists(user, artist):
@@ -45,8 +41,10 @@ class DukzlUsers:
             UserData = json.load(f)
         converted = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["identifier"] == converted:
-                return True
+            if not artists["identifier"] == converted:
+                continue
+
+            return True
         return False
 
     @staticmethod
@@ -74,8 +72,10 @@ class DukzlUsers:
         _ = artist
         artist = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["identifier"] == artist:
-                UserData["artists"].remove(artists)
+            if not artists["identifier"] == artist:
+                continue
+            
+            UserData["artists"].remove(artists)
         UserData["artistlist"].remove(_)
         with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
             json.dump(UserData, f)
@@ -92,8 +92,10 @@ class DukzlUsers:
             UserData = json.load(f)
         artist = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["identifier"] == artist:
-                artists["playlist"].append(url)
+            if not artists["identifier"] == artist:
+                continue
+
+            artists["playlist"].append(url)
         with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
             json.dump(UserData, f)
 
@@ -103,8 +105,10 @@ class DukzlUsers:
             UserData = json.load(f)
         artist = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["identifier"] == artist:
-                artists["playlist"].remove(url)
+            if not artists["identifier"] == artist:
+                continue
+
+            artists["playlist"].remove(url)
         with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
             json.dump(UserData, f)
 
@@ -114,8 +118,10 @@ class DukzlUsers:
             UserData = json.load(f)
         artist = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["identifier"] == artist:
-                artists["playlist"] = []
+            if not artists["identifier"] == artist:
+                continue
+
+            artists["playlist"] = []
         with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
             json.dump(UserData, f)
 
@@ -125,8 +131,10 @@ class DukzlUsers:
             UserData = json.load(f)
         artist = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["identifier"] == artist:
-                return artists["playlist"]
+            if not artists["identifier"] == artist:
+                continue
+
+            return artists["playlist"]
 
     @staticmethod
     async def LevelUp(user, amount, artist):
@@ -135,7 +143,9 @@ class DukzlUsers:
         amount = float(amount)
         artist = ConvertName(artist)
         for artists in UserData["artists"]:
-            if artists["identifier"] == artist:
-                artists["level"] += amount
+            if not artists["identifier"] == artist:
+                continue
+
+            artists["level"] += amount
         with open(f"users/{user.id}.json", "w", encoding="utf-8") as f:
             json.dump(UserData, f)
