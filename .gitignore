@@ -132,3 +132,4 @@ config.py
 artists/
 users/
 logs/
+.DS_Store
