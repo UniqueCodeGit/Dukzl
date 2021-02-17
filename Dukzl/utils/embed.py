@@ -1,6 +1,5 @@
 import discord
 import datetime
-import config
 from dateutil import tz
 
 
@@ -25,7 +24,7 @@ class EmbedUtil:
     @classmethod
     def footer(cls, embed=discord.Embed) -> None:
         embed.timestamp = datetime.datetime.utcnow()
-        embed.color = config.COLOR
+        embed.color = 0xFFC9C2
         embed.set_footer(text="Dukzl")
 
     @classmethod
