@@ -1,8 +1,17 @@
+import os
 import discord
 import discodo
 from discord.ext import commands
-from log import Log
-from cogs import load_extensions
+from .utils.log import Log
+
+
+def load_extensions(bot: commands.Bot) -> None:
+    cmdlist = os.listdir("cogs/")
+    for i in cmdlist:
+        if i.endswith(".py") and not i.startswith("__"):
+            cmdname = f"cogs.{i.replace('.py', '')}"
+            bot.load_extension(cmdname)
+    bot.load_extension("jishaku")
 
 
 class Dukzl(commands.Bot):
