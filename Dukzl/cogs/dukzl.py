@@ -5,8 +5,8 @@ import discord
 from discord.ext import commands
 
 from config import COLOR
-from wrapper.artistjson import DukzlArtist
-from wrapper.userjson import DukzlUsers
+from ..wrapper.artistjson import DukzlArtist
+from ..wrapper.userjson import DukzlUsers
 
 
 class DukzlCog(commands.Cog):
