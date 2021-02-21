@@ -6,7 +6,7 @@ import psutil
 from EZPaginator import Paginator
 from discord.ext import commands
 
-from config import COLOR
+from . import COLOR
 
 
 class Chatting(commands.Cog):

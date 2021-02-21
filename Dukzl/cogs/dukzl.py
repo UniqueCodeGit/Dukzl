@@ -4,7 +4,7 @@ import random
 import discord
 from discord.ext import commands
 
-from config import COLOR
+from . import COLOR
 from ..wrapper.artistjson import DukzlArtist
 from ..wrapper.userjson import DukzlUsers
 

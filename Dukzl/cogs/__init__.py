@@ -4,7 +4,9 @@ from typing import Any
 
 from discord.ext import commands
 
-from config import OWNERS
+OWNERS = []
+
+COLOR = 0x000000
 
 
 async def start_discodo() -> Any:

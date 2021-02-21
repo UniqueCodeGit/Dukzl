@@ -5,15 +5,6 @@ from discord.ext import commands
 from .utils.log import Log
 
 
-def load_extensions(bot: commands.Bot) -> None:
-    cmdlist = os.listdir("cogs/")
-    for i in cmdlist:
-        if i.endswith(".py") and not i.startswith("__"):
-            cmdname = f"cogs.{i.replace('.py', '')}"
-            bot.load_extension(cmdname)
-    bot.load_extension("jishaku")
-
-
 class Dukzl(commands.Bot):
     def __init__(self):
         super().__init__(
@@ -22,32 +13,27 @@ class Dukzl(commands.Bot):
             activity=discord.Game("$도움 | Dukzl 1.0"),
             intents=discord.Intents.all(),
         )
-        load_extensions(self)
         self.logger = Log.cogLogger(self)
         self.discordLogger = Log.discordLogger()
         self.Wonstein = discodo.DPYClient(self)
 
-    async def on_message(self, message):
-        if message.author.bot:
-            return
-
-        return await self.process_commands(message)
-
     async def on_ready(self):
         self.logger.info(f"Dukzl loaded as {self.user.name}")
 
-    async def on_command_error(self, context, exception):
-        if not isinstance(exception, commands.CommandInvokeError):
-            return
 
-        embed = discord.Embed(
-            title=f"{context.command.name} 수행 중 에러 발생",
-            description="Dukzl 서버에서 버그 제보를 해주세요!",
-            color=config.COLOR,
-        )
-        embed.add_field(name="에러 내용", value=f"```{exception}```")
-        await context.send(embed=embed)
+def auto_load_cogs(bot: Dukzl):
+    cmdlist = os.listdir("Dukzl/cogs/")
+
+    for i in cmdlist:
+        if i.endswith(".py") and not i.startswith("__"):
+            cmdname = f"Dukzl.cogs.{i.replace('.py', '')}"
+
+            try:
+                bot.load_extension(cmdname)
+                bot.logger.info(f"{cmdname} Cog successfully loaded.")
+
+            except Exception as error:
+                bot.logger.error(f"{cmdname} failed to load: {error}")
 
 
 bot = Dukzl()
-bot.run(config.TOKEN, bot=True)
